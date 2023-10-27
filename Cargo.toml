@@ -1,0 +1,12 @@
+[package]
+name = "df-sim"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = { version = "4.4.7", features = ["derive"]}
+csv = "1.3.0"
+dam = { git = "ssh://git@github.com/stanford-ppl/DAM-RS.git", branch = "dev" }
+serde = "1.0.190"
