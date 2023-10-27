@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use clap::Parser;
 use dam::{
     simulation::{DotConvertible, InitializationOptionsBuilder, ProgramBuilder, RunOptions},
-    utility_contexts::GeneratorContext,
+    utility_contexts::{ConsumerContext, GeneratorContext},
 };
 use nodes::{AbstractOperation, DoNotCare};
 use serde::{Deserialize, Serialize};
@@ -22,6 +22,10 @@ struct Args {
     /// Which nodes need to be provided initial stimulus
     #[arg(short, long)]
     init_nodes: Vec<usize>,
+
+    /// Which nodes need to be terminated
+    #[arg(short, long)]
+    terminal_nodes: Vec<usize>,
 
     /// How many times to provide initial stimulus
     #[arg(short, long)]
@@ -76,6 +80,12 @@ fn main() {
         ));
 
         node_map.get_mut(&init).unwrap().add_input(rcv);
+    }
+
+    for terminal in args.terminal_nodes {
+        let (snd, rcv) = ctx.unbounded();
+        ctx.add_child(ConsumerContext::new(rcv));
+        node_map.get_mut(&terminal).unwrap().add_output(snd);
     }
 
     // Consume the node map, and register the children.
